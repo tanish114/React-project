@@ -1,4 +1,13 @@
 import React, { useEffect } from "react";
+import { Routes , Route } from 'react-router-dom'
+import { Link } from "react-router-dom";
+
+import Layout from './Layout'
+import Home from './Home'
+import About from './About'
+import Service from './Service'
+import Register from './Register'
+import Login from './Login'
 
 export default function MenuOverlay({ open, onClose }) {
   // Prevent body scroll when menu is open
@@ -34,13 +43,17 @@ export default function MenuOverlay({ open, onClose }) {
           {/* Left links */}
           <div className="flex-1">
             <ul className="space-y-8 text-4xl md:text-5xl lg:text-6xl font-normal text-black">
-              <li className="inline-block">
-                <span className="inline-block bg-pink-600/90 text-white px-3 -ml-3 py-1">Home</span>
-              </li>
-              <li>About</li>
-              <li>Gallery</li>
-              <li>Register</li>
-              <li>Login</li>
+             
+        
+             <ul className="space-y-8 text-4xl md:text-5xl lg:text-6xl font-normal text-black">
+  <li><Link to="/" onClick={onClose}>Home</Link></li>
+  <li><Link to="/about" onClick={onClose}>About</Link></li>
+  <li><Link to="/service" onClick={onClose}>Service</Link></li>
+  <li><Link to="/register" onClick={onClose}>Register</Link></li>
+  <li><Link to="/login" onClick={onClose}>Login</Link></li>
+</ul>
+
+
             </ul>
           </div>
 
