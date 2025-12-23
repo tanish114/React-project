@@ -1,7 +1,7 @@
 
 
 import React, { useState } from 'react'
-
+import ElectricBorder from './ElectricBorder'
 import { useNavigate } from 'react-router-dom'
 
 const Register = () => {
@@ -67,9 +67,16 @@ const Register = () => {
   }
 
   return (
+    
     <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
       
-     
+     <ElectricBorder
+  color="#7df9ff"
+  speed={1}
+  chaos={0.5}
+  thickness={2}
+  style={{ borderRadius: 16 }}
+>
       
         <form
           onSubmit={handlesubmit}
@@ -177,7 +184,7 @@ const Register = () => {
          
 
         </form>
-     
+     </ElectricBorder>
     </div>
   )
 }

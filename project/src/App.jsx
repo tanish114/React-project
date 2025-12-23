@@ -7,6 +7,9 @@ import About from './About'
 import Service from './Service'
 import Register from './Register'
 import Login from './Login'
+import Booking from './Booking'
+import BookingConfirm from './BookingConfirm'
+
 function App() {
   
 
@@ -19,6 +22,8 @@ function App() {
     <Route path="service" element={<Service/>} />
     <Route path="register" element={<Register/>} />
     <Route path="login" element={<Login/>} />
+    <Route path="booking" element={<Booking/>} />
+    <Route path="BookingConfirm" element={<BookingConfirm/>} />
   </Route>
 </Routes>
 

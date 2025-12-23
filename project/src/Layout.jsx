@@ -3,16 +3,7 @@ import {Outlet,Link} from 'react-router-dom'
 const Layout = () => {
   return (
     <>
-    <header>
-        <ul>
-            <li> <Link to={"/"}>Home </Link> </li>
-            <li> <Link to={"about"}>About </Link> </li>
-            <li> <Link to={"service"}>service </Link> </li>
-            <li> <Link to={"Register"}>Register </Link> </li>
-            <li> <Link to={"login"}>Login </Link> </li>
-            {/* <Route path='*' element={<h1>Error</h1>} /> */}
-        </ul>
-    </header>
+  
     <hr />
     <Outlet/>
     <hr />
@@ -94,7 +85,7 @@ const Layout = () => {
     {/* COPYRIGHT */}
     <p className="text-sm text-gray-400">
       Copyright ©2025 All rights reserved |
-      This template is made with <span className="text-pink-500">♥</span> by Colorlib
+      
     </p>
 
     {/* SOCIAL ICONS */}

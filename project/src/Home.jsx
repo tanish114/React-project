@@ -1,388 +1,218 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Menuoverlay from "./Menuoverlay.jsx";
 import SliderSection from "./SliderSection";
+import heroImage from "../public/home1.jpg";
 import './Home.css'
-import heroImage from "../public/home1.jpg"
-import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Navigate, useNavigate } from 'react-router-dom'
 
 gsap.registerPlugin(ScrollTrigger);
 
-
 const Home = () => {
- const [menuOpen, setMenuOpen] = useState(false);
- useEffect(() => {
-  // Fade up for headings
-  gsap.utils.toArray(".section-title").forEach((el) => {
-    gsap.from(el, {
-      opacity: 0,
-      y: 40,
-      duration: 1,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-        toggleActions: "restart none none reset",
-      },
-    });
-  });
+  const [menuOpen, setMenuOpen] = useState(false);
+  const containerRef = useRef(null);
+let Navigate=useNavigate()
+  useEffect(() => {
+    // Optimization for smooth interaction
+    ScrollTrigger.config({ limitCallbacks: true });
 
-  // Fade-up + stagger for cards
-  gsap.utils.toArray(".fade-card").forEach((container) => {
-    gsap.from(container.children, {
-      opacity: 0,
-      y: 50,
-      duration: 1,
-      stagger: 0.25,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: container,
-        start: "top 80%",
-        toggleActions: "restart none none reset",
-      },
-    });
-  });
+    let ctx = gsap.context(() => {
+      // 1. NON-BLOCKING SKEW ENGINE (Zero Shake, Zero Lag)
+      const proxy = { skew: 0 };
+      const setSkew = gsap.quickSetter(".warp-inner", "css");
 
-  // Zoom-in on images
-  gsap.utils.toArray(".zoom-img").forEach((img) => {
-    gsap.from(img, {
-      scale: 0.9,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: img,
-        start: "top 85%",
-        toggleActions: "restart none none reset",
-      },
-    });
-  });
+      ScrollTrigger.create({
+        onUpdate: (self) => {
+          let skew = gsap.utils.clamp(-6, 6, self.getVelocity() / 500);
+          
+          // Smoothly interpolate to target skew
+          gsap.to(proxy, {
+            skew: skew,
+            duration: 0.4,
+            ease: "power2.out",
+            overwrite: true,
+            onUpdate: () => setSkew({ "--skew": `${proxy.skew}deg` }),
+            onComplete: () => {
+              // Drift back to 0 when movement stops
+              gsap.to(proxy, {
+                skew: 0,
+                duration: 0.8,
+                ease: "power3.out",
+                onUpdate: () => setSkew({ "--skew": `${proxy.skew}deg` })
+              });
+            }
+          });
+        }
+      });
 
-  // Parallax floating effect
-  gsap.utils.toArray(".float-card").forEach((card) => {
-    gsap.to(card, {
-      y: -10,
-      duration: 2.5,
-      repeat: -1,
-      yoyo: true,
-      ease: "easeInOut",
-    });
-  });
+      // 2. GRID COLOR INVERSION (Reacts to White Section)
+      ScrollTrigger.create({
+        trigger: ".white-section",
+        start: "top 50%",
+        end: "bottom 50%",
+        onEnter: () => gsap.to(".bg-grid", { "--grid-color": "rgba(0,0,0,0.15)", duration: 0.8 }),
+        onLeave: () => gsap.to(".bg-grid", { "--grid-color": "rgba(255,255,255,0.1)", duration: 0.8 }),
+        onEnterBack: () => gsap.to(".bg-grid", { "--grid-color": "rgba(0,0,0,0.15)", duration: 0.8 }),
+        onLeaveBack: () => gsap.to(".bg-grid", { "--grid-color": "rgba(255,255,255,0.1)", duration: 0.8 }),
+      });
 
-}, []);
+      // 3. BACKGROUND GRADIENT MORPH
+      gsap.to(".bg-overlay", {
+        background: "linear-gradient(135deg, #0f172a 0%, #3b0764 50%, #4c0519 100%)",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1
+        }
+      });
 
+      // 4. IMAGE SLAT REVEAL
+      gsap.utils.toArray(".image-container").forEach((container) => {
+        gsap.from(container.querySelectorAll(".slat"), {
+          yPercent: 100,
+          stagger: 0.03,
+          ease: "expo.out",
+          scrollTrigger: {
+            trigger: container,
+            start: "top 90%",
+            toggleActions: "play none none reverse",
+          }
+        });
+      });
+
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const SlatImage = ({ src }) => (
+    <div className="image-container relative w-full h-full overflow-hidden flex shadow-2xl">
+      {[...Array(10)].map((_, i) => (
+        <div key={i} className="slat relative h-full flex-1 overflow-hidden border-r border-white/5">
+          <img 
+            src={src} 
+            className="absolute h-full object-cover max-w-none" 
+            style={{ width: "1000%", left: `-${i * 100}%` }} 
+            alt="Villa" 
+          />
+        </div>
+      ))}
+    </div>
+  );
+  let fun1=()=>{
+    
+   Navigate('/Booking')
+  }
   return (
-    <>
- 
+    <div ref={containerRef} className="relative min-h-screen bg-[#050505] text-white overflow-x-hidden">
+      
+      {/* BACKGROUND ELEMENTS */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="bg-overlay absolute inset-0 opacity-40 `bg-[linear-gradient(135deg,_#020617_0%,_#1e1b4b_50%,_#312e81_100%)]`" />
+        
+        {/* REACTIVE GRID */}
+        <div className="bg-grid absolute inset-0 opacity-100" 
+             style={{ 
+               backgroundImage: `radial-gradient(var(--grid-color, rgba(255,255,255,0.1)) 1px, transparent 1px)`, 
+               backgroundSize: '50px 50px' 
+             }} />
+             
+        <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/10 blur-[120px]" />
+      </div>
 
- <div className="font-serif min-h-screen bg-gray-100">
-      {/* {Menu overlay } */}
-      {<Menuoverlay open={menuOpen} onClose={() => setMenuOpen(false)} /> }
-
-      {/* {HERO SECTION } */}
-      <section
-        className="relative h-screen w-full bg-center bg-cover"
-        style={{
-          backgroundImage: `url(${heroImage})`,
-        }}
-      >
-        {/* NAV */}
-        <div className="absolute top-0 inset-x-0 flex items-center justify-between p-6 md:p-8 z-20">
-          <h1 className="text-white text-2xl italic select-none">Villa</h1>
-
-          <button
-            aria-label="Open menu"
-            onClick={() => setMenuOpen(true)}
-            className="group p-2 rounded focus:outline-none"
-          >
-            <svg
-              className="w-8 h-8 text-white"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect x="3" y="6" width="18" height="1.5" rx="0.75" fill="currentColor" />
-              <rect x="3" y="11.25" width="18" height="1.5" rx="0.75" fill="currentColor" />
-              <rect x="3" y="16.5" width="18" height="1.5" rx="0.75" fill="currentColor" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Centered content */}
-        <div className="h-full w-full flex flex-col items-center justify-center text-center px-6 z-10 relative">
-          <h1 className="text-white text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight drop-shadow-lg">
-            Welcome to <span className="italic">Villa</span> resort
-          </h1>
-
-          <p className="mt-6 text-white text-base sm:text-lg lg:text-xl opacity-90">
-            Discover our world-class hotel & restaurant resort.
-          </p>
-
-          <div className="mt-8 flex gap-4">
-            <button className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-full text-sm tracking-wide shadow">
-              EXPLORE THE BEAUTY
-            </button>
-
-            <button className="border border-white px-6 py-3 rounded-full text-sm tracking-wide text-white/95 backdrop-blur-sm">
-              DOWNLOAD
-            </button>
+      {/* FIXED NAVIGATION */}
+      <div className="fixed top-8 right-8 z-100"  >
+        <button 
+          onClick={() => setMenuOpen(true)}
+          className="group p-6 backdrop-blur-3xl border border-white/10   rounded-full hover:scale-110 transition-all shadow-2xl active:scale-95"
+        >
+          <span className="text-amber-600 text-sm font-bold tracking-[0.2em] uppercase pl-2">
+            Menu
+          </span>
+          <div className="flex flex-col gap-1.5 items-end">
+            <div className="w-8 h-2px bg-white group-hover:w-4 transition-all" />
+            <div className="w-5 h-2px bg-white group-hover:w-8 transition-all" />
+            <div className="w-8 h-2px bg-white group-hover:w-6 transition-all" />
           </div>
-        </div>
-
-        {/* Optional dark overlay for readability */}
-        <div className="absolute inset-0 bg-black/25 z-0"></div>
-      </section>
-
-
-{/* you can visit section start */}
-      <section className="py-16 px-4 md:px-12 lg:px-24 bg-white">
-  {/* HEADING */}
-  <h2 className="text-gray-500 text-xs font-semibold tracking-[0.3rem] mb-12 space-y-3 fade-card float-card">
-    YOU CAN VISIT
-  </h2>
-
-  {/* GRID */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-
-    {/* CARD 1 */}
-    <div className="space-y-3">
-      <img 
-        src="/visit1.jpg" 
-        alt="Food & Wines"
-        className="w-full h-52 object-cover rounded-md zoom-img"
-      />
-
-      <h3 className="text-lg font-medium text-gray-900">Food & Wines</h3>
-
-      <div className="text-pink-600 text-sm tracking-wide">
-        ★★★★☆
+        </button>
       </div>
 
-      <p className="text-gray-500 text-sm italic">
-        3,239 reviews
-      </p>
-    </div>
+      <Menuoverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
+      
+      <div className="warp-inner relative z-10 will-change-transform" style={{ transform: "skewY(var(--skew, 0deg))" }}>
+        
+        {/* HERO */}
+        <section className="relative h-screen flex items-center justify-center">
+          <div className="absolute inset-0 opacity-30">
+            <SlatImage src={heroImage} />
+          </div>
+          <div className="relative z-10 text-center">
+            <h1 className="text-[16vw] font-black italic tracking-tighter leading-none mix-blend-difference uppercase">
+              Villa
+            </h1>
+            <p className="tracking-[2em] text-[10px] uppercase font-bold opacity-40 mt-6 font-sans">Majestic Resonance</p>
+          </div>
+        </section>
 
-    {/* CARD 2 */}
-    <div className="space-y-3">
-      <img 
-        src="/visit2.jpg" 
-        alt="Resort & Spa"
-        className="w-full h-52 object-cover rounded-md zoom-img"
-      />
+        {/* GALLERY */}
+        <section className="py-40 px-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-32">
+            {[1, 2, 3, 4].map((id) => (
+              <div key={id} className="group">
+                <div className="w-full h-[600px] mb-10 overflow-hidden shadow-2xl">
+                  <SlatImage src={`/visit${id}.jpg`} />
+                </div>
+                <h3 className="text-4xl font-black italic uppercase tracking-tighter">Level 0{id}</h3>
+                <button onClick={fun1}>Book It</button>
+                <div className="w-12 h-1 bg-white mt-4 group-hover:w-32 transition-all duration-500" />
+              </div>
+            ))}
+          </div>
+        </section>
 
-      <h3 className="text-lg font-medium text-gray-900">Resort & Spa</h3>
+        {/* WHITE SECTION (Triggers Grid Color Change) */}
+        <section className="white-section py-32 bg-white text-black rounded-[80px] md:rounded-[150px] mx-4 relative z-20 shadow-2xl overflow-hidden">
+          <div className="max-w-7xl mx-auto">
+            <SliderSection />
+          </div>
+        </section>
 
-      <div className="text-pink-600 text-sm tracking-wide">
-        ★★★★★
+        {/* BLOG REVEAL */}
+        <section className="py-40 px-6">
+          <div className="flex flex-col border-t border-white/10">
+            {["STAY", "LIVE", "VOX"].map((word, i) => (
+              <div key={i} className="group relative py-20 border-b border-white/10 flex justify-between items-center cursor-pointer">
+                <h2 className="text-[11vw] font-black tracking-tighter transition-all duration-700 group-hover:pl-10 group-hover:text-cyan-400 italic">
+                  {word}
+                </h2>
+                <div className="w-64 h-80 opacity-0 group-hover:opacity-100 transition-all duration-700 absolute left-1/2 -translate-x-1/2 pointer-events-none z-20">
+                  <SlatImage src={`/blog${i+1}.jpg`} />
+                </div>
+                <span className="text-4xl font-thin opacity-20">0{i+1}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <section className="h-screen flex flex-col items-center justify-center">
+           <h2 className="text-[15vw] font-black italic tracking-tighter mb-10 leading-none">VILLA.</h2>
+           <button className="px-20 py-8 bg-white text-black font-black uppercase text-xl rounded-full hover:scale-110 shadow-2xl transition-all">
+             RESERVE
+           </button>
+        </section>
       </div>
 
-      <p className="text-gray-500 text-sm italic">
-        4,921 reviews
-      </p>
+      <style jsx>{`
+        .warp-inner { 
+          transform-origin: center center;
+          transition: transform 0.15s ease-out; 
+        }
+      `}</style>
     </div>
+  );
+};
 
-    {/* CARD 3 */}
-    <div className="space-y-3">
-      <img 
-        src="/visit3.jpg" 
-        alt="Hotel Rooms"
-        className="w-full h-52 object-cover rounded-md zoom-img"
-      />
-
-      <h3 className="text-lg font-medium text-gray-900">Hotel Rooms</h3>
-
-      <div className="text-pink-600 text-sm tracking-wide">
-        ★★★★★
-      </div>
-
-      <p className="text-gray-500 text-sm italic">
-        2,112 reviews
-      </p>
-    </div>
-
-    {/* CARD 4 */}
-    <div className="space-y-3">
-      <img 
-        src="/visit4.jpg" 
-        alt="Yacht Club"
-        className="w-full h-52 object-cover rounded-md zoom-img"
-      />
-
-      <h3 className="text-lg font-medium text-gray-900">Yacht Club</h3>
-
-      <div className="text-pink-600 text-sm tracking-wide">
-        ★★★★☆
-      </div>
-
-      <p className="text-gray-500 text-sm italic">
-        6,421 reviews
-      </p>
-    </div>
-
-  </div>
-</section>
-{/* you can visit section end */}
-
-{/* slider section */}
-<SliderSection />
-{/* slider section */}
-
-
-{/* recent blog post centre */}
-
-
-
-<section className="py-20 px-4 md:px-12 lg:px-24 ">
-  
-  {/* HEADING */}
-  <div className="text-center mb-12">
-    <h2 className=" section-title text-3xl md:text-4xl font-serif mb-4">
-      Recent Blog Post
-    </h2>
-
-    <p className="text-gray-500 text-sm max-w-2xl mx-auto leading-relaxed">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. In dolor, iusto doloremque quo
-      odio repudiandae sunt eveniet? Enim facilis laborum voluptate id porro, culpa maiores quis,
-      blanditiis laboriosam alias. Sed.
-    </p>
-  </div>
-
-  {/* BLOG CARDS */}
-  <div className="grid ... fade-card grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-
-    {/* CARD 1 */}
-    <div className="bg-white rounded shadow-sm overflow-hidden cursor-pointer">
-      <img 
-        src="/blog1.jpg"
-        alt="Blog 1"
-        className="w-full h-52 object-cover zoom-img"
-      />
-
-      <div className="p-6">
-        <p className="text-xs text-gray-400 tracking-widest mb-2">
-          FEBRUARY 26, 2018
-        </p>
-        <h3 className="text-lg text-gray-800 font-medium leading-snug">
-          Five Reasons to Stay at Villa Resort
-        </h3>
-      </div>
-    </div>
-
-    {/* CARD 2 */}
-    <div className="bg-white rounded shadow-sm overflow-hidden cursor-pointer">
-      <img 
-        src="blog2.jpg"
-        alt="Blog 2"
-        className="w-full h-52 object-cover zoom-img"
-      />
-
-      <div className="p-6">
-        <p className="text-xs text-gray-400 tracking-widest mb-2">
-          FEBRUARY 26, 2018
-        </p>
-        <h3 className="text-lg text-gray-800 font-medium leading-snug">
-          Five Reasons to Stay at Villa Resort
-        </h3>
-      </div>
-    </div>
-
-    {/* CARD 3 */}
-    <div className="bg-white rounded shadow-sm overflow-hidden cursor-pointer">
-      <img 
-        src="blog3.jpg"
-        alt="Blog 3"
-        className="w-full h-52 object-cover zoom-img"
-      />
-
-      <div className="p-6">
-        <p className="text-xs text-gray-400 tracking-widest mb-2">
-          FEBRUARY 26, 2018
-        </p>
-        <h3 className="text-lg text-gray-800 font-medium leading-snug">
-          Five Reasons to Stay at Villa Resort
-        </h3>
-      </div>
-    </div>
-
-  </div>
-</section>
-{/* recent blog post centre */}
-
-{/* review section */}
-<section className="py-20 px-4 md:px-12 lg:px-24 bg-white text-center ">
-
-  {/* Heading */}
-  <h2 className="section-title text-3xl md:text-4xl font-serif mb-16 ">
-    Testimonial
-  </h2>
-
-  {/* Grid */}
-  <div className="grid ... fade-card grid-cols-1 md:grid-cols-3 gap-16">
-
-    {/* CARD 1 */}
-    <div className="flex flex-col items-center text-center max-w-md mx-auto">
-      <img 
-        src="/person_1.jpg"
-        alt="Testimonial 1"
-        className="w-20 h-20 rounded-full object-cover mb-6 zoom-img"
-      />
-
-      <p className="italic text-gray-700 text-[15px] leading-relaxed px-4">
-        “Et quidem, impedit eum fugiat excepturi iste aliquid suscipit, tempore, 
-        delectus rem soluta voluptatem distinctio sed dolores, magni fugit nemo cum expedita. 
-        Totam a accusantium sunt aut autem placeat officia.”
-      </p>
-
-      <p className="text-sm text-gray-400 mt-4">— Jean Smith</p>
-    </div>
-
-    {/* CARD 2 */}
-    <div className="flex flex-col items-center text-center max-w-md mx-auto">
-      <img 
-        src="/person_2.jpg"
-        alt="Testimonial 2"
-        className="w-20 h-20 rounded-full object-cover mb-6 zoom-img"
-      />
-
-      <p className="italic text-gray-700 text-[15px] leading-relaxed px-4">
-        “Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-        In dolor, iusto doloremque quo odio repudiandae sunt eveniet? 
-        Enim facilis laborum voluptate id porro, culpa maiores quis, 
-        blanditiis laboriosam alias.”
-      </p>
-
-      <p className="text-sm text-gray-400 mt-4">— John Doe</p>
-    </div>
-
-    {/* CARD 3 */}
-    <div className="flex flex-col items-center text-center max-w-md mx-auto">
-      <img 
-        src="/person_3.jpg"
-        alt="Testimonial 3"
-        className="w-20 h-20 rounded-full object-cover mb-6 zoom-img"
-      />
-
-      <p className="italic text-gray-700 text-[15px] leading-relaxed px-4">
-        “Nostrum, alias, provident magnam sit blanditiis laboriosam unde quaerat, 
-        at ipsam, ratione maiores saepe nisi modi corporis quas! Beatae quam, quod 
-        aspernatur debitis nesciunt quasi porro ea iste nobis aliquid perspiciatis 
-        nostrum culpa impedit aut, iure blanditiis itaque similique sunt!”
-      </p>
-
-      <p className="text-sm text-gray-400 mt-4">— John Doe</p>
-    </div>
-
-  </div>
-</section>
-{/* review section */}
-
-
-    </div>
-
-    </>
-  )
-}
-
-export default Home
+export default Home;
