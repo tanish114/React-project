@@ -315,7 +315,7 @@ const Booking = () => {
       </div>
 
       {/* --- THE BEAUTIFUL FORM --- */}
-      <div className="form-container relative z-10 w-full max-w-4xl bg-white/[0.02] backdrop-blur-2xl border border-white/10 rounded-[48px] p-10 md:p-16 shadow-2xl">
+      <div className="form-container relative z-10 w-full max-w-4xl `bg-white/2` backdrop-blur-2xl border border-white/10 rounded-[48px] p-10 md:p-16 shadow-2xl">
         
         <div className="text-center mb-12 field-anim">
           <h2 className="text-5xl md:text-6xl font-serif italic tracking-tighter text-white mb-2">
