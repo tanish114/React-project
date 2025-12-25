@@ -1,11 +1,11 @@
-
-
-import React, { useState } from 'react'
+import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
 import ElectricBorder from './ElectricBorder'
 import { useNavigate } from 'react-router-dom'
 
 const Register = () => {
   let navigate = useNavigate()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   let [form, setform] = useState({
     myname: "",
     mycity: "",
@@ -16,6 +16,11 @@ const Register = () => {
     mycpassword: ""
   })
 
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
+  }, [isMenuOpen]);
+
   let handlechange = (e) => {
     setform({ ...form, [e.target.name]: e.target.value })
   }
@@ -25,169 +30,118 @@ const Register = () => {
     let valid = true
 
     if (form.myname.trim() === "") {
-      alert("name cannot be empty")
-      valid = false
-    }
-    else if (form.mycity.trim() === "") {
-      alert("city cannot be empty")
-      valid = false
-    }
-    else if (form.myage.trim() === "" || Number(form.myage) < 18 || Number(form.myage) > 100) {
-      alert("Enter age properly")
-      valid = false
-    }
-    else if (form.mycontact.trim() === "" || form.mycontact.length !== 10) {
-      alert("Enter 10 digit number")
-      valid = false
-    }
-    else if (form.myemail.trim() === "" || !(form.myemail.includes('@gmail.com'))) {
-      alert("Invalid email")
-      valid = false
-    }
-    else if (form.mypassword.trim() === "" || !(form.mypassword.match(/[~!#$@%^&*()0123456789]/))) {
-      alert("Password must include special character or number")
-      valid = false
-    }
-    else if (form.mycpassword.trim() === "" || form.mycpassword !== form.mypassword) {
-      alert("Password doesn't match")
-      valid = false
+      alert("name cannot be empty"); valid = false
+    } else if (form.mycity.trim() === "") {
+      alert("city cannot be empty"); valid = false
+    } else if (form.myage.trim() === "" || Number(form.myage) < 18 || Number(form.myage) > 100) {
+      alert("Enter age properly"); valid = false
+    } else if (form.mycontact.trim() === "" || form.mycontact.length !== 10) {
+      alert("Enter 10 digit number"); valid = false
+    } else if (form.myemail.trim() === "" || !(form.myemail.includes('@gmail.com'))) {
+      alert("Invalid email"); valid = false
+    } else if (form.mypassword.trim() === "" || !(form.mypassword.match(/[~!#$@%^&*()0123456789]/))) {
+      alert("Password must include special character or number"); valid = false
+    } else if (form.mycpassword.trim() === "" || form.mycpassword !== form.mypassword) {
+      alert("Password doesn't match"); valid = false
     }
 
     if (valid) {
       alert("Form submitted")
-
       localStorage.setItem("myname", form.myname)
       localStorage.setItem("myemail", form.myemail)
-      localStorage.setItem("myage", form.myage)
-      localStorage.setItem("mycontact", form.mycontact)
       localStorage.setItem("mypassword", form.mypassword)
-
       navigate('/login')
     }
   }
 
   return (
-    
-    <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
+    <div className="relative min-h-screen flex items-center justify-center bg-[#050505] text-white px-4 overflow-hidden">
       
-     <ElectricBorder
-  color="#7df9ff"
-  speed={1}
-  chaos={0.5}
-  thickness={2}
-  style={{ borderRadius: 16 }}
->
-      
-        <form
-          onSubmit={handlesubmit}
-          className="bg-[#0d0f17]/90 backdrop-blur-md p-8 w-[380px] rounded-xl flex flex-col gap-4"
-        >
-          <h1 className="text-2xl font-semibold text-center mb-2">
-            Create Account
-          </h1>
+      {/* --- NAVIGATION: CLEANED & FIXED --- */}
+      <nav className="fixed top-0 left-0 w-full z-[9999] flex justify-between items-center px-6 md:px-12 py-8 pointer-events-none">
+        <div className="text-2xl font-serif italic font-black tracking-tighter text-white pointer-events-auto select-none">
+          VILLA
+        </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-300">Name</label>
-            <input
-              type="text"
-              id="name"
-              name="myname"
-              value={form.myname}
-              onChange={handlechange}
-              className="input-field border rounded-lg"
-              
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-300">City</label>
-            <input
-              type="text"
-              id="city"
-              name="mycity"
-              value={form.mycity}
-              onChange={handlechange}
-              className="input-field border rounded-lg"
-              
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-300">Age</label>
-            <input
-              type="number"
-              id="age"
-              name="myage"
-              value={form.myage}
-              onChange={handlechange}
-              className="input-field border rounded-lg"
-              
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-300">Contact</label>
-            <input
-              type="number"
-              id="contact"
-              name="mycontact"
-              value={form.mycontact}
-              onChange={handlechange}
-              className="input-field border rounded-lg"
-              
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-300">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="myemail"
-              value={form.myemail}
-              onChange={handlechange}
-              className="input-field border rounded-lg"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-300">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="mypassword"
-              value={form.mypassword}
-              onChange={handlechange}
-              className="input-field border rounded-lg"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-300">Confirm Password</label>
-            <input
-              type="password"
-              id="cpassword"
-              name="mycpassword"
-              value={form.mycpassword}
-              onChange={handlechange}
-              className="input-field border rounded-lg"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="mt-3 bg-cyan-400 text-black py-2 rounded-lg font-semibold hover:bg-cyan-300 transition duration-200"
+        <div className="pointer-events-auto">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)} 
+            className="group relative w-14 h-14 flex flex-col items-center justify-center bg-white/5 backdrop-blur-2xl rounded-full border border-white/10 hover:border-amber-500 transition-all duration-500 shadow-2xl"
           >
-            Register
+            <div className="relative w-6 h-[10px] flex flex-col justify-between">
+              <span className={`w-full h-[1.5px] bg-white transition-all duration-500 ${isMenuOpen ? 'rotate-45 translate-y-[4px] bg-amber-500' : ''}`} />
+              <span className={`w-full h-[1.5px] bg-white transition-all duration-500 ${isMenuOpen ? '-rotate-45 -translate-y-[4px] bg-amber-500' : ''}`} />
+            </div>
           </button>
+        </div>
+      </nav>
 
-         
+      {/* --- MENU OVERLAY --- */}
+      <div className={`fixed inset-0 z-[9998] bg-[#080808] flex items-center justify-center transition-transform duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)] ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className="relative z-10 flex flex-col gap-6 text-center">
+          {['Home', 'About', 'Services', 'Register', 'Login'].map((item) => (
+            <Link 
+              key={item} 
+              to={item === 'Home' ? '/' : `/${item.toLowerCase()}`} 
+              onClick={() => setIsMenuOpen(false)} 
+              className="group overflow-hidden py-2"
+            >
+              <span className="block text-5xl md:text-8xl font-serif italic text-stone-600 hover:text-amber-500 transition-all duration-500 transform group-hover:scale-110">
+                {item}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
 
-        </form>
-     </ElectricBorder>
+      {/* --- REGISTER FORM --- */}
+      <div className="relative z-10 scale-90 md:scale-100">
+        <ElectricBorder
+          color="#7df9ff"
+          speed={1}
+          chaos={0.5}
+          thickness={2}
+          style={{ borderRadius: 16 }}
+        >
+          <form
+            onSubmit={handlesubmit}
+            className="bg-[#0d0f17]/95 backdrop-blur-xl p-8 w-[380px] rounded-xl flex flex-col gap-4 border border-white/5 shadow-2xl"
+          >
+            <h1 className="text-2xl font-serif italic text-center mb-2">
+              Create <span className="text-cyan-400 font-sans not-italic font-bold">Account</span>
+            </h1>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Name</label>
+              <input type="text" name="myname" value={form.myname} onChange={handlechange} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-400 transition-colors" />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Email</label>
+              <input type="email" name="myemail" value={form.myemail} onChange={handlechange} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-400 transition-colors" />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Password</label>
+              <input type="password" name="mypassword" value={form.mypassword} onChange={handlechange} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-400 transition-colors" />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Confirm Password</label>
+              <input type="password" name="mycpassword" value={form.mycpassword} onChange={handlechange} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-400 transition-colors" />
+            </div>
+
+            <button
+              type="submit"
+              className="mt-3 bg-cyan-400 text-black py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-cyan-300 transition-all duration-300 shadow-[0_0_15px_rgba(125,249,255,0.2)]"
+            >
+              Register
+            </button>
+          </form>
+        </ElectricBorder>
+      </div>
     </div>
   )
 }
 
 export default Register
-

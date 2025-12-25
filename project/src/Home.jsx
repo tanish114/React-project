@@ -5,28 +5,26 @@ import heroImage from "../public/home1.jpg";
 import './Home.css'
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const containerRef = useRef(null);
-let Navigate=useNavigate()
+  const navigate = useNavigate();
+
   useEffect(() => {
-    // Optimization for smooth interaction
     ScrollTrigger.config({ limitCallbacks: true });
 
     let ctx = gsap.context(() => {
-      // 1. NON-BLOCKING SKEW ENGINE (Zero Shake, Zero Lag)
+      // 1. SKEW ENGINE
       const proxy = { skew: 0 };
       const setSkew = gsap.quickSetter(".warp-inner", "css");
 
       ScrollTrigger.create({
         onUpdate: (self) => {
           let skew = gsap.utils.clamp(-6, 6, self.getVelocity() / 500);
-          
-          // Smoothly interpolate to target skew
           gsap.to(proxy, {
             skew: skew,
             duration: 0.4,
@@ -34,7 +32,6 @@ let Navigate=useNavigate()
             overwrite: true,
             onUpdate: () => setSkew({ "--skew": `${proxy.skew}deg` }),
             onComplete: () => {
-              // Drift back to 0 when movement stops
               gsap.to(proxy, {
                 skew: 0,
                 duration: 0.8,
@@ -46,7 +43,7 @@ let Navigate=useNavigate()
         }
       });
 
-      // 2. GRID COLOR INVERSION (Reacts to White Section)
+      // 2. GRID COLOR INVERSION
       ScrollTrigger.create({
         trigger: ".white-section",
         start: "top 50%",
@@ -57,7 +54,7 @@ let Navigate=useNavigate()
         onLeaveBack: () => gsap.to(".bg-grid", { "--grid-color": "rgba(255,255,255,0.1)", duration: 0.8 }),
       });
 
-      // 3. BACKGROUND GRADIENT MORPH
+      // 3. GRADIENT MORPH
       gsap.to(".bg-overlay", {
         background: "linear-gradient(135deg, #0f172a 0%, #3b0764 50%, #4c0519 100%)",
         scrollTrigger: {
@@ -66,20 +63,6 @@ let Navigate=useNavigate()
           end: "bottom bottom",
           scrub: 1
         }
-      });
-
-      // 4. IMAGE SLAT REVEAL
-      gsap.utils.toArray(".image-container").forEach((container) => {
-        gsap.from(container.querySelectorAll(".slat"), {
-          yPercent: 100,
-          stagger: 0.03,
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: container,
-            start: "top 90%",
-            toggleActions: "play none none reverse",
-          }
-        });
       });
 
     }, containerRef);
@@ -101,40 +84,36 @@ let Navigate=useNavigate()
       ))}
     </div>
   );
-  let fun1=()=>{
-    
-   Navigate('/Booking')
-  }
+
   return (
     <div ref={containerRef} className="relative min-h-screen bg-[#050505] text-white overflow-x-hidden">
       
       {/* BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="bg-overlay absolute inset-0 opacity-40 `bg-[linear-gradient(135deg,_#020617_0%,_#1e1b4b_50%,_#312e81_100%)]`" />
-        
-        {/* REACTIVE GRID */}
+        <div className="bg-overlay absolute inset-0 opacity-40" />
         <div className="bg-grid absolute inset-0 opacity-100" 
              style={{ 
                backgroundImage: `radial-gradient(var(--grid-color, rgba(255,255,255,0.1)) 1px, transparent 1px)`, 
                backgroundSize: '50px 50px' 
              }} />
-             
         <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/10 blur-[120px]" />
       </div>
 
-      {/* FIXED NAVIGATION */}
-      <div className="fixed top-8 right-8 z-100"  >
+      {/* FIXED NAVIGATION - HIGHER Z-INDEX */}
+      <div className="fixed top-8 right-8 z-[9999]">
         <button 
-          onClick={() => setMenuOpen(true)}
-          className="group p-6 backdrop-blur-3xl border border-white/10   rounded-full hover:scale-110 transition-all shadow-2xl active:scale-95"
+          onClick={() => setMenuOpen(!menuOpen)} // TOGGLE LOGIC HERE
+          className="group p-6 backdrop-blur-3xl border border-white/10 rounded-full hover:scale-110 transition-all shadow-2xl active:scale-95 bg-black/20"
         >
-          <span className="text-amber-600 text-sm font-bold tracking-[0.2em] uppercase pl-2">
-            Menu
-          </span>
-          <div className="flex flex-col gap-1.5 items-end">
-            <div className="w-8 h-2px bg-white group-hover:w-4 transition-all" />
-            <div className="w-5 h-2px bg-white group-hover:w-8 transition-all" />
-            <div className="w-8 h-2px bg-white group-hover:w-6 transition-all" />
+          <div className="flex items-center gap-4">
+            <span className="text-amber-600 text-sm font-bold tracking-[0.2em] uppercase pl-2">
+              {menuOpen ? "Close" : "Menu"}
+            </span>
+            <div className="flex flex-col gap-1.5 items-end">
+              <div className={`h-px bg-white transition-all duration-500 ${menuOpen ? 'w-8 rotate-45 translate-y-2' : 'w-8'}`} />
+              <div className={`h-px bg-white transition-all duration-500 ${menuOpen ? 'opacity-0' : 'w-5'}`} />
+              <div className={`h-px bg-white transition-all duration-500 ${menuOpen ? 'w-8 -rotate-45 -translate-y-2' : 'w-8'}`} />
+            </div>
           </div>
         </button>
       </div>
@@ -165,14 +144,16 @@ let Navigate=useNavigate()
                   <SlatImage src={`/visit${id}.jpg`} />
                 </div>
                 <h3 className="text-4xl font-black italic uppercase tracking-tighter">Level 0{id}</h3>
-                <button onClick={fun1}>Book It</button>
-                <div className="w-12 h-1 bg-white mt-4 group-hover:w-32 transition-all duration-500" />
+                <button onClick={() => navigate('/Booking')} className="mt-4 px-6 py-2 border border-white/20 rounded hover:bg-white hover:text-black transition-all">
+                   Book It
+                </button>
+                <div className="w-12 h-px bg-white mt-4 group-hover:w-32 transition-all duration-500" />
               </div>
             ))}
           </div>
         </section>
 
-        {/* WHITE SECTION (Triggers Grid Color Change) */}
+        {/* WHITE SECTION */}
         <section className="white-section py-32 bg-white text-black rounded-[80px] md:rounded-[150px] mx-4 relative z-20 shadow-2xl overflow-hidden">
           <div className="max-w-7xl mx-auto">
             <SliderSection />
