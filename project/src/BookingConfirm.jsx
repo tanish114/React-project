@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { gsap } from 'gsap'
 
 const on = () => {
 
@@ -10,25 +11,63 @@ const on = () => {
     city:"",
     checkin:"",
     checkout:"",
-    people:"",  })
-
-    let [data,setdata]=useState([])
-    let[editId,seteditId]=useState(null)
-
-    let fetchdata=()=>{
-  let api="http://localhost:3000/hotel"
-
-  axios.get(api).then((res)=>{
-    setdata(res.data)
-  }) .catch((res)=>{
-    console.log("error",);
-    
+    people:"",
   })
-    }
+
+  let [data,setdata]=useState([])
+  let [editId,seteditId]=useState(null)
+
+  let fetchdata=()=>{
+    let api="http://localhost:3000/hotel"
+    axios.get(api).then((res)=>{
+      setdata(res.data) 
+    })
+  }
 
   useEffect(()=>{
     fetchdata()
-  },[])
+
+    const ctx = gsap.context(() => {
+      gsap.from(".page", {
+        opacity: 0,
+        y: 40,
+        duration: 1,
+        ease: "power3.out"
+      })
+    })
+
+    return () => ctx.revert()
+  }, [])
+
+  useEffect(()=>{
+    const ctx = gsap.context(() => {
+      gsap.from(".table-row", {
+        opacity: 0,
+        y: 20,
+        stagger: 0.08,
+        duration: 0.6,
+        ease: "power2.out"
+      })
+    })
+
+    return () => ctx.revert()
+  }, [data])
+
+  useEffect(()=>{
+    if(editId){
+      const ctx = gsap.context(() => {
+        gsap.from(".edit-form", {
+          opacity: 0,
+          y: 50,
+          scale: 0.95,
+          duration: 0.6,
+          ease: "power3.out"
+        })
+      })
+
+      return () => ctx.revert()
+    }
+  }, [editId])
 
   let datadelete=(id)=>{
     let api=`http://localhost:3000/hotel/${id}`
@@ -44,9 +83,7 @@ const on = () => {
 
   let handlesubmit=(e)=>{
     e.preventDefault()
-
     let api=`http://localhost:3000/hotel/${editId}`
-
     axios.put(api,{...form,person:500}).then(()=>{
       fetchdata()
       seteditId(null)
@@ -55,18 +92,24 @@ const on = () => {
 
   let formopen=(e)=>{
     seteditId(e.id)
-    setform({name:e.name,age:e.age,aadhar:e.aadhar,city:e.city,checkin:e.checkin,checkout:e.checkout,people:e.people})
-
+    setform({
+      name:e.name,
+      age:e.age,
+      aadhar:e.aadhar,
+      city:e.city,
+      checkin:e.checkin,
+      checkout:e.checkout,
+      people:e.people
+    })
   }
 
   return (
-    <>
+    <div className="page">
       <h1>data show page</h1>
 
       <table border={2}>
         <thead>
           <tr>
-
             <th>Name</th>
             <th>age</th>
             <th>city</th>
@@ -74,14 +117,13 @@ const on = () => {
             <th>checkin</th>
             <th>checkout</th>
             <th>people</th>
-            <th>total</th>
             <th>cancel</th>
             <th>Edit</th>
           </tr>
         </thead>
         <tbody>
           {data.map((e) => (
-            <tr key={e.id}>
+            <tr key={e.id} className="table-row">
               <td>{e.name}</td>
               <td>{e.age}</td>
               <td>{e.city}</td>
@@ -89,7 +131,6 @@ const on = () => {
               <td>{e.checkin}</td>
               <td>{e.checkout}</td>
               <td>{e.people}</td>
-              {/* <td>{e.people * e.person}</td> */}
               <td onClick={() => datadelete(e.id)} style={{ cursor: "pointer", color: "red" }}>
                 Delete
               </td>
@@ -101,35 +142,28 @@ const on = () => {
         </tbody>
       </table>
 
-
-{/* cinditional rendering--- editId && */}
-      {editId &&(
-        <form onSubmit={handlesubmit}>
-          enter name: <input type="text" name="name" value={form.name} onChange={handlechange} /> <br /> <br />
-
-          enter age: <input type="text" name="age" value={form.age} onChange={handlechange} /> <br /> <br />
-
-          enter aadhar: <input type="text" name="aadhar" value={form.aadhar} onChange={handlechange} /> <br /> <br />
+      {editId && (
+        <form onSubmit={handlesubmit} className="edit-form">
+          enter name: <input type="text" name="name" value={form.name} onChange={handlechange} /><br /><br />
+          enter age: <input type="text" name="age" value={form.age} onChange={handlechange} /><br /><br />
+          enter aadhar: <input type="text" name="aadhar" value={form.aadhar} onChange={handlechange} /><br /><br />
 
           select city
-      <select name="city" value={form.city} onChange={handlechange}> <br />
-        <option value="bhopal">bhopal</option>
-        <option value="indore">indore</option>
-        <option value="jabalpur">jabalpur</option>
-        <option value="satna">satna</option>
-      </select>
+          <select name="city" value={form.city} onChange={handlechange}>
+            <option value="bhopal">bhopal</option>
+            <option value="indore">indore</option>
+            <option value="jabalpur">jabalpur</option>
+            <option value="satna">satna</option>
+          </select><br /><br />
 
-      enter checkin: <input type="date" name="checkin" value={form.checkin} onChange={handlechange} />  <br />
+          enter checkin: <input type="date" name="checkin" value={form.checkin} onChange={handlechange} /><br /><br />
+          enter checkout: <input type="date" name="checkout" value={form.checkout} onChange={handlechange} /><br /><br />
+          enter people: <input type="text" name="people" value={form.people} onChange={handlechange} /><br /><br />
 
-      enter checkout: <input type="date" name="checkout" value={form.checkout} onChange={handlechange} />  <br />
-    enter people: <input type="text" name="people" value={form.people} onChange={handlechange} />  <br />
-
-    <button type='submit'>Save data </button>
-
-
+          <button type="submit">Save data</button>
         </form>
       )}
-    </>
+    </div>
   )
 }
 
