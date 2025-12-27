@@ -100,7 +100,7 @@ const Home = () => {
       </div>
 
       {/* FIXED NAVIGATION - HIGHER Z-INDEX */}
-      <div className="fixed top-8 right-8 z-[9999]">
+      <div className="fixed top-8 right-8 z-9999">
         <button 
           onClick={() => setMenuOpen(!menuOpen)} // TOGGLE LOGIC HERE
           className="group p-6 backdrop-blur-3xl border border-white/10 rounded-full hover:scale-110 transition-all shadow-2xl active:scale-95 bg-black/20"

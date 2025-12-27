@@ -54,7 +54,7 @@ const Login = () => {
     <div className="relative min-h-screen flex items-center justify-center bg-[#050505] text-white px-4 overflow-hidden">
       
       {/* --- 1. NAVIGATION BAR --- */}
-      <nav className="fixed top-0 left-0 w-full z-[9999] flex justify-between items-center px-6 md:px-12 py-8 pointer-events-none">
+      <nav className="fixed top-0 left-0 w-full z-9999 flex justify-between items-center px-6 md:px-12 py-8 pointer-events-none">
         <div className="text-2xl font-serif italic font-black tracking-tighter text-white pointer-events-auto select-none">
           VILLA
         </div>
@@ -64,16 +64,16 @@ const Login = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
             className="group relative w-14 h-14 flex flex-col items-center justify-center bg-white/5 backdrop-blur-2xl rounded-full border border-white/10 hover:border-amber-500 transition-all duration-500 shadow-2xl"
           >
-            <div className="relative w-6 h-[10px] flex flex-col justify-between">
-              <span className={`w-full h-[1.5px] bg-white transition-all duration-500 ${isMenuOpen ? 'rotate-45 translate-y-[4px] bg-amber-500' : ''}`} />
-              <span className={`w-full h-[1.5px] bg-white transition-all duration-500 ${isMenuOpen ? '-rotate-45 -translate-y-[4px] bg-amber-500' : ''}`} />
+            <div className="relative w-6 h-10px flex flex-col justify-between">
+              <span className={`w-full h-[1.5px] bg-white transition-all duration-500 ${isMenuOpen ? 'rotate-45 translate-y-4px bg-amber-500' : ''}`} />
+              <span className={`w-full h-[1.5px] bg-white transition-all duration-500 ${isMenuOpen ? '-rotate-45 -translate-y-4px bg-amber-500' : ''}`} />
             </div>
           </button>
         </div>
       </nav>
 
       {/* --- 2. MENU OVERLAY --- */}
-      <div className={`fixed inset-0 z-[9998] bg-[#080808] flex items-center justify-center transition-transform duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)] ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}`}>
+      <div className={`fixed inset-0 z-9998 bg-[#080808] flex items-center justify-center transition-transform duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)] ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="relative z-10 flex flex-col gap-6 text-center">
           {['Home', 'About', 'Services', 'Register', 'Login'].map((item) => (
             <Link 

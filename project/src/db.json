@@ -1,15 +1,3 @@
 {
-  "hotel": [
-    {
-      "name": "Tanish singh",
-      "age": "25",
-      "aadhar": "123456789012",
-      "city": "Maihar",
-      "checkin": "2025-12-24",
-      "checkout": "2025-12-25",
-      "people": "2",
-      "person": 500,
-      "id": "ad4b"
-    }
-  ]
+  "hotel": []
 }
