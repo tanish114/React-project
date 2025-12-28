@@ -90,7 +90,7 @@ const Service = () => {
       {/* --- 2. OVERLAY MENU (Moved outside Nav for better stacking) --- */}
       <div className={`fixed inset-0 z-[9998] bg-black flex items-center justify-center transition-transform duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)] ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="flex flex-col gap-6 text-center">
-          {['Home', 'About', 'Services', 'Register','Login'].map((item) => (
+          {['Home', 'About', 'Service', 'Register','Login'].map((item) => (
             <Link 
               key={item} 
               to={item === 'Home' ? '/' : `/${item.toLowerCase()}`} 

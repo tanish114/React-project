@@ -4,7 +4,7 @@ import { Routes , Route } from 'react-router-dom'
 import Layout from './Layout'
 import Home from './Home'
 import About from './About'
-import Service from './Service'
+import Services from './Service'
 import Register from './Register'
 import Login from './Login'
 import Booking from './Booking'
@@ -19,7 +19,7 @@ function App() {
   <Route path="/" element={<Layout/>}>
     <Route index element={<Home/>} />
     <Route path="about" element={<About/>} />
-    <Route path="service" element={<Service/>} />
+    <Route path="services" element={<Services/>} />
     <Route path="register" element={<Register/>} />
     <Route path="login" element={<Login/>} />
     <Route path="booking" element={<Booking/>} />
