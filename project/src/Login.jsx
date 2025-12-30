@@ -148,11 +148,7 @@ const Login = () => {
               className="mt-4 bg-amber-500 text-black py-4 rounded-lg font-bold uppercase tracking-[0.2em] text-xs cursor-pointer hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(197,160,89,0.2)]"
             />
 
-            <div className="text-center">
-               <Link to="/register" className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-white transition-colors">
-                  Create an account instead
-               </Link>
-            </div>
+
           </form>
         </ElectricBorder>
       </div>

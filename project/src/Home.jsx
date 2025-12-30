@@ -69,6 +69,9 @@ const Home = () => {
 
     return () => ctx.revert();
   }, []);
+  function fun(){
+    navigate('./Booking')
+  }
 
   const SlatImage = ({ src }) => (
     <div className="image-container relative w-full h-full overflow-hidden flex shadow-2xl">
@@ -143,7 +146,7 @@ const Home = () => {
                 <div className="w-full h-[600px] mb-10 overflow-hidden shadow-2xl">
                   <SlatImage src={`/visit${id}.jpg`} />
                 </div>
-                <h3 className="text-4xl font-black italic uppercase tracking-tighter">Level 0{id}</h3>
+                {/* <h3 className="text-4xl font-black italic uppercase tracking-tighter">Dine in{id}</h3> */}
                 <button onClick={() => navigate('/Booking')} className="mt-4 px-6 py-2 border border-white/20 rounded hover:bg-white hover:text-black transition-all">
                    Book It
                 </button>
@@ -180,7 +183,7 @@ const Home = () => {
         {/* FOOTER */}
         <section className="h-screen flex flex-col items-center justify-center">
            <h2 className="text-[15vw] font-black italic tracking-tighter mb-10 leading-none">VILLA.</h2>
-           <button className="px-20 py-8 bg-white text-black font-black uppercase text-xl rounded-full hover:scale-110 shadow-2xl transition-all">
+           <button onClick={fun} className="px-20 py-8 bg-white text-black font-black uppercase text-xl rounded-full hover:scale-110 shadow-2xl transition-all">
              RESERVE
            </button>
         </section>

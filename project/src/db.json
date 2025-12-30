@@ -1,3 +1,16 @@
 {
-  "hotel": []
+  "hotel": [
+    {
+      "id": "653a",
+      "name": "Tanish singh Parihar",
+      "age": "25",
+      "aadhar": "123456789012",
+      "city": "Maihar",
+      "email": "tanishparihar14@gmail.com",
+      "contact": "1234567890",
+      "checkin": "2025-12-30",
+      "checkout": "2025-12-31",
+      "people": "5"
+    }
+  ]
 }
