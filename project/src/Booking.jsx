@@ -99,6 +99,21 @@ const Booking = () => {
         alert("email cannot be empty 😶 or include @gmail,com in it 🙄")
         valid=false
     }
+
+    else if(form.people.trim()==="" ){
+        alert("Number of people cannot be empty ")
+        valid=false
+    }
+
+    else if(form.checkin.trim()==="" ){
+        alert("tell me the date of checkin ")
+        valid=false
+    }
+
+    else if(form.checkout.trim()==="" ){
+        alert("tell me the date of checkout ")
+        valid=false
+    }
     
     if (valid) {
      
