@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Layout from './Layout'
 import Home from './Home'
 import About from './About'
-import Service from './Service'
+import Services from './Service'
 import Register from './Register'
 import Login from './Login'
 
@@ -33,7 +33,7 @@ export default function MenuOverlay({ open, onClose }) {
             <ul className="space-y-8 text-4xl md:text-5xl lg:text-6xl font-normal text-black font-serif">
               <li><Link to="/" onClick={onClose} className="hover:italic hover:pl-4 transition-all uppercase tracking-tighter">Home</Link></li>
               <li><Link to="/about" onClick={onClose} className="hover:italic hover:pl-4 transition-all uppercase tracking-tighter">About</Link></li>
-              <li><Link to="/service" onClick={onClose} className="hover:italic hover:pl-4 transition-all uppercase tracking-tighter">Service</Link></li>
+              <li><Link to="/services" onClick={onClose} className="hover:italic hover:pl-4 transition-all uppercase tracking-tighter">Service</Link></li>
               <li><Link to="/register" onClick={onClose} className="hover:italic hover:pl-4 transition-all uppercase tracking-tighter">Register</Link></li>
               <li><Link to="/login" onClick={onClose} className="hover:italic hover:pl-4 transition-all uppercase tracking-tighter">Login</Link></li>
             </ul>
