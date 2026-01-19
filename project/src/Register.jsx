@@ -25,28 +25,53 @@ const Register = () => {
     setform({ ...form, [e.target.name]: e.target.value })
   }
 
-  let handlesubmit = (e) => {
-    e.preventDefault()
-    let valid = true
+  let handlesubmit = async (e) => {
+  e.preventDefault()
+  let valid = true
 
-    if (form.myname.trim() === "") {
-      alert("name cannot be empty"); valid = false
-    }  else if (form.myemail.trim() === "" || !(form.myemail.includes('@gmail.com'))) {
-      alert("Invalid email"); valid = false
-    } else if (form.mypassword.trim() === "" || !(form.mypassword.match(/[~!#$@%^&*()0123456789]/))) {
-      alert("Password must include special character or number"); valid = false
-    } else if (form.mycpassword.trim() === "" || form.mycpassword !== form.mypassword) {
-      alert("Password doesn't match"); valid = false
-    }
+  if (form.myname.trim() === "") {
+    alert("name cannot be empty"); valid = false
+  } else if (form.myemail.trim() === "" || !(form.myemail.includes('@gmail.com'))) {
+    alert("Invalid email"); valid = false
+  } else if (form.mypassword.trim() === "" || !(form.mypassword.match(/[~!#$@%^&*()0123456789]/))) {
+    alert("Password must include special character or number"); valid = false
+  } else if (form.mycpassword.trim() === "" || form.mycpassword !== form.mypassword) {
+    alert("Password doesn't match"); valid = false
+  }
 
-    if (valid) {
-      alert("Form submitted")
-      localStorage.setItem("myname", form.myname)
-      localStorage.setItem("myemail", form.myemail)
-      localStorage.setItem("mypassword", form.mypassword)
-      navigate('/login')
+  if (valid) {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.myname,
+          email: form.myemail,
+          password: form.mypassword,
+          city: form.mycity,
+          age: form.myage,
+          contact: form.mycontact,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        alert("Registered successfully")
+        navigate("/login")
+      } else {
+        alert(data.error || "Registration failed")
+      }
+
+    } catch (error) {
+      alert("Server not responding")
+      console.error(error)
     }
   }
+}
+
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-[#050505] text-white px-4 overflow-hidden">
