@@ -11,6 +11,12 @@
       "checkin": "2025-12-30",
       "checkout": "2025-12-31",
       "people": "5"
+    },
+    {
+      "id": "ba0e",
+      "name": "Tanish singh Parihar",
+      "email": "a@gmail.com",
+      "password": "Sid123"
     }
   ]
 }

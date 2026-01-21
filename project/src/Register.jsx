@@ -8,12 +8,9 @@ const Register = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   let [form, setform] = useState({
     myname: "",
-    mycity: "",
-    myage: "",
-    mycontact: "",
     myemail: "",
     mypassword: "",
-    mycpassword: ""
+    mycpassword: "",
   })
 
   useEffect(() => {
@@ -41,7 +38,9 @@ const Register = () => {
 
   if (valid) {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/register/", {
+      console.log("Submitting form:", form)
+      console.log("Submitting form:", typeof(form))
+      const response = await fetch("http://127.0.0.1:8000/my_serializer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,9 +49,7 @@ const Register = () => {
           name: form.myname,
           email: form.myemail,
           password: form.mypassword,
-          city: form.mycity,
-          age: form.myage,
-          contact: form.mycontact,
+          cpassword: form.mycpassword,
         }),
       })
 
@@ -137,7 +134,7 @@ const Register = () => {
 
             <div className="flex flex-col gap-1">
               <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Email</label>
-              <input type="text" name="myemail" value={form.myemail} onChange={handlechange} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-400 transition-colors" />
+              <input type="email" name="myemail" value={form.myemail} onChange={handlechange} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-400 transition-colors" />
             </div>
 
             <div className="flex flex-col gap-1">
